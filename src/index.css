@@ -1,0 +1,71 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+  -webkit-font-smoothing: none;
+  --desk: #2e7d7a;
+  --desk-dot: #276c69;
+  --platinum: #d4d4d8;
+  --paper: #fbfbf8;
+  --ink: #16162b;
+  --ink-soft: #55556b;
+  --accent: #ff6a1f;
+  --accent-dark: #d4500c;
+  --highlight: #ffd23f;
+  --danger: #c4263a;
+  --ok: #1f7a3d;
+  --font-ui: Galmuri11, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+  --font-mono: GalmuriMono11, Consolas, 'D2Coding', monospace;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  /* 데스크톱 디더링 패턴 */
+  background-color: var(--desk);
+  background-image:
+    linear-gradient(45deg, var(--desk-dot) 25%, transparent 25%, transparent 75%, var(--desk-dot) 75%),
+    linear-gradient(45deg, var(--desk-dot) 25%, transparent 25%, transparent 75%, var(--desk-dot) 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 2px 2px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--highlight);
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--highlight);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
