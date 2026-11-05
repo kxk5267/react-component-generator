@@ -1,5 +1,117 @@
 {
   "worktree": {
     "baseRef": "head"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/tdd-reminder.sh\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-commit-test.sh\"",
+            "timeout": 300,
+            "statusMessage": "커밋 전 테스트 실행 중..."
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/*.jks)",
+      "Read(**/*.keystore)",
+      "Read(**/id_rsa*)",
+      "Read(**/id_ed25519*)",
+      "Read(**/id_ecdsa*)",
+      "Read(**/*secret*)",
+      "Read(**/*credential*)",
+      "Read(**/service-account*.json)",
+      "Read(**/.npmrc)",
+      "Read(**/.netrc)",
+      "Read(**/.pgpass)",
+      "Read(**/.git-credentials)",
+      "Read(**/.docker/config.json)",
+      "Read(**/.kube/config)",
+      "Read(**/.aws/**)",
+      "Read(**/.ssh/**)",
+      "Read(**/.gnupg/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.ssh/**)",
+      "Read(~/.gnupg/**)",
+
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(**/*.pem)",
+      "Edit(**/*.key)",
+      "Edit(**/*.p12)",
+      "Edit(**/*.pfx)",
+      "Edit(**/*.jks)",
+      "Edit(**/*.keystore)",
+      "Edit(**/id_rsa*)",
+      "Edit(**/id_ed25519*)",
+      "Edit(**/id_ecdsa*)",
+      "Edit(**/*secret*)",
+      "Edit(**/*credential*)",
+      "Edit(**/service-account*.json)",
+      "Edit(**/.npmrc)",
+      "Edit(**/.netrc)",
+      "Edit(**/.pgpass)",
+      "Edit(**/.git-credentials)",
+      "Edit(**/.docker/config.json)",
+      "Edit(**/.kube/config)",
+      "Edit(**/.aws/**)",
+      "Edit(**/.ssh/**)",
+      "Edit(**/.gnupg/**)",
+      "Edit(~/.aws/**)",
+      "Edit(~/.ssh/**)",
+      "Edit(~/.gnupg/**)",
+
+      "Bash(* .env*)",
+      "Bash(*/.env*)",
+      "Bash(*\\.env*)",
+      "Bash(* *.pem*)",
+      "Bash(* *.key*)",
+      "Bash(* *secret*)",
+      "Bash(* *credential*)",
+      "Bash(*.ssh/*)",
+      "Bash(*.aws/*)",
+      "Bash(*.git-credentials*)",
+      "Bash(*.npmrc*)",
+      "Bash(*.netrc*)",
+      "Bash(printenv*)",
+      "Bash(env)",
+      "PowerShell(* .env*)",
+      "PowerShell(*\\.env*)",
+      "PowerShell(*/.env*)",
+      "PowerShell(* *.pem*)",
+      "PowerShell(* *.key*)",
+      "PowerShell(* *secret*)",
+      "PowerShell(* *credential*)",
+      "PowerShell(*.ssh*)",
+      "PowerShell(*.aws*)",
+      "PowerShell(*.git-credentials*)",
+      "PowerShell(*.npmrc*)",
+      "PowerShell(*.netrc*)",
+      "PowerShell(Get-ChildItem Env:*)",
+      "PowerShell(gci Env:*)",
+      "PowerShell($env:*)"
+    ]
   }
 }

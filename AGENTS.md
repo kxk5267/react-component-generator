@@ -8,6 +8,7 @@
 - 린트: `bun run lint`
 - 타입체크 + 빌드: `bun run build`
 - 변경 후 완료 보고 전 `bun run lint`, `bun run test`, `bun run build`를 실행한다.
+- 코드 생성·수정을 마치면 완료 보고 전에 `evaluator` 서브 에이전트(`.claude/agents/evaluator.md`)를 호출한다. 변경 파일 경로, 구현 의도, 위 명령의 결과를 프롬프트에 넘긴다. `BLOCK`/`CHANGES_REQUESTED` 판정의 확정 결함은 고친 뒤 다시 호출하고, 반박하려면 근거를 보고에 남긴다. 문서·설정만 바꾼 경우는 생략한다.
 
 ## Golden Rules
 
@@ -15,6 +16,15 @@
 
 - API 키를 클라이언트 번들이나 응답 본문에 노출하지 않는다. 키는 서버가 `process.env`에서 읽고(`server/index.ts:59-62`), `/api/config`는 boolean만 반환한다(`server/index.ts:148-153`). 키 값 자체를 반환하는 엔드포인트를 만들지 않는다.
 - 생성 코드는 import 없이 전역 `React`만 쓰고, 끝에 `render(<Component />)`를 호출해야 한다. 미리보기가 `react-live`의 `noInline` 모드라 `render()`가 없으면 아무것도 그려지지 않는다 (`src/components/LivePreview.tsx:71`, `server/generator.ts:235-238`). 이 계약을 바꾸면 시스템 프롬프트(`server/index.ts:7-20`), `ensureRenderCall`, `LivePreview`를 함께 수정한다.
+
+- 민감 파일(`.env`, `.env.*`, `*.pem`, `*.key`, `*secret*`, `*credential*`, `.npmrc`, `~/.ssh`, `~/.aws` 등)은 읽거나 수정하지 않는다. `.claude/settings.json`의 `permissions.deny`가 `Read`/`Edit`/`Bash`/`PowerShell`로 차단하며, 이 deny 규칙을 약화·삭제하거나 `settings.local.json`·`--dangerously-skip-permissions` 등으로 우회하지 않는다. 차단 때문에 막히면 우회하지 말고 사용자에게 요청한다.
+  - 키 존재 여부나 필요한 변수명은 `server/index.ts`의 `process.env` 참조와 `/api/config`(boolean)로 확인하고, 값은 사용자가 직접 `.env`에 넣는다.
+  - 새 비밀 파일 유형이 생기면(예: `.env.production`, 서비스 계정 JSON) `permissions.deny`에 `Read`와 `Edit`를 쌍으로 추가한다. 환경 변수 덤프(`printenv`, `env`, `$env:`)도 차단 대상이다.
+  - `Bash`/`PowerShell` 패턴 차단은 셸 문법 변형으로 우회될 수 있는 보조 수단이다. 근본 방어는 `Read`/`Edit` deny와 `.gitignore`(`.env`)이므로 둘 다 유지한다.
+
+- `git commit`은 `.claude/hooks/pre-commit-test.sh`(PreToolUse 훅)가 `bun run test`를 먼저 실행해 하나라도 실패하면 차단한다. 훅을 끄거나 `--no-verify`·`disableAllHooks` 등으로 우회하지 않고, 실패한 테스트를 고친 뒤 다시 커밋한다.
+
+- 파일 생성/수정(`Write`/`Edit`) 직전에 `.claude/hooks/tdd-reminder.sh`가 `.claude/rules/tdd.md` 요약을 주입한다. 문서·설정·스타일 파일은 건너뛴다. 리마인더가 떠도 RED(실패 확인) 없이 프로덕션 코드를 먼저 쓰지 않는다.
 
 ### Do
 
